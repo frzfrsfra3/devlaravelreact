@@ -1,0 +1,60 @@
+stages:
+  - deploy
+  - production
+cache:
+ paths:
+    - node_modules
+deploy:
+  #  image: docker:dind
+   stage: deploy
+   script:
+     - pwd
+     - ls
+     - composer install
+     - cp .env.example .env
+     
+     - php artisan storage:link
+     - mysql -u root -pP@ssw0rd -e "create database dtic" || echo "testing"
+     - php artisan migrate:fresh
+    # - chmod -R 777 /var/www/html
+    # - chmod -R 777 *
+    # - cd /var/www/html/laravel && git clone http://192.168.1.201/bigbang-its/dtic_bigban
+     - sudo cp  -rf * /var/www/html/ff
+
+  #   - docker rm container $(docker ps -qa --no-trunc --filter "expose=3000/tcp") 2> d.log
+  #   - docker rm $(docker ps -qa --no-trunc --filter "expose=3000/tcp")
+    #  - docker stop newtest || docker rm newtest  || echo "newtest containter is already stop"
+    # - docker rm newtest
+    #  - docker run -d -p 3000:3000 --rm --name newtest app/blog
+    #  - docker cp newtest:/app ./app
+     - pwd
+   tags:
+     - dticback
+   only:
+     - master
+production:
+   stage: production
+   script:
+     - git config git-ftp.url "ftp://zaiter.its.ae:21/public_html/next"
+     - git config git-ftp.user "zaiterits"
+     - git config git-ftp.password "P@ssw0rdFrz"
+     - ls
+# Upload all files
+    
+   # - git ftp init
+
+# Or if the files are already there
+     - git ftp catchup
+    #  - docker cp newtest:/app ./app
+# Work and deploy 
+     - echo "new content" >> index.txt
+   # - git commit index.txt -m "Add new content"
+     - git ftp push
+    #  - cd ./app &&  lftp -e "set ssl:check-hostname no; mirror -vvv -R . ./public_html/next6 --parallel=20 --exclude-glob .git* --exclude .git/ ; quit" -u zaiterits,P@ssw0rdFrz zaiter.its.ae
+     - lftp -e "set ssl:check-hostname no; mirror -vvv -R . ./public_html/next7 --parallel=20 --exclude-glob .git* --exclude .git/ ; quit" -u zaiterits,P@ssw0rdFrz zaiter.its.ae
+    
+
+   tags:
+     - dticback
+   only:
+     - master
