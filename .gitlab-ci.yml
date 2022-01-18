@@ -36,8 +36,8 @@ production:
    stage: production
    script:
      - git config git-ftp.url "ftp://zaiter.its.ae:21/public_html/next"
-     - git config git-ftp.user "zaiterits"
-     - git config git-ftp.password "P@ssw0rdFrz"
+     - git config git-ftp.user "username"
+     - git config git-ftp.password "Password"
      - ls
 # Upload all files
     
